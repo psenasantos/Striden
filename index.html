@@ -428,7 +428,7 @@ function initCityMap(){
  if(cityMap)return;
  if(!window.L){toast("O mapa não carregou. Verifique sua conexão.");return}
  cityMap=L.map("city-map").setView([-14.2,-51.9],4);
- L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(cityMap);
+ L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap &copy; CARTO"}).addTo(cityMap);
 }
 function locateUser(){
  if(!navigator.geolocation){toast("Seu navegador não oferece suporte à localização.");return}
