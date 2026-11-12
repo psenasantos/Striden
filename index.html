@@ -149,11 +149,16 @@ input:focus{border-color:var(--lime)}
  <section id="view-profile" class="view">
   <div class="page-title"><p class="eyebrow">SUA IDENTIDADE</p><h2>Perfil</h2><p class="muted">Gerencie suas informações.</p></div>
   <form id="profile-form" class="panel">
-   <label for="profile-name">Nome</label><input id="profile-name" maxlength="40" required>
-   <label for="profile-username">Nome de usuário</label><input id="profile-username" maxlength="20" placeholder="seu_usuario" required>
-   <button class="btn btn-primary full" type="submit">Salvar perfil</button>
-   <p id="profile-message" class="form-message"></p>
-  </form>
+  <label for="profile-username">Nome de usuário</label>
+  <input id="profile-username" maxlength="20"
+    placeholder="seu_usuario"
+    autocomplete="username" required>
+  <p class="muted">Esse será seu identificador no STRIDEN.</p>
+  <button class="btn btn-primary full" type="submit">
+    Salvar nome de usuário
+  </button>
+  <p id="profile-message" class="form-message"></p>
+</form>
   <button id="signout-button" class="btn btn-outline full">Sair da conta</button>
  </section>
  <nav class="bottom-nav" aria-label="Navegação principal">
