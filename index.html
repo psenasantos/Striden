@@ -186,6 +186,82 @@ input:focus{border-color:var(--lime)}
   .tracker-metrics strong{font-size:16px}
   .metric-main strong{font-size:25px}
 }
+ /* STRIDEN GPS — REDESIGN TELA CHEIA */
+.tracker{
+  padding:0;
+  align-items:stretch;
+  background:#070c18;
+}
+
+.tracker-sheet{
+  width:100%;
+  height:100dvh;
+  max-height:100dvh;
+  max-width:none;
+  margin:0;
+  border:0;
+  border-radius:0;
+  padding:calc(22px + env(safe-area-inset-top)) 18px
+    calc(18px + env(safe-area-inset-bottom));
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  background:
+    radial-gradient(ellipse at 50% 0%,#203653 0%,transparent 55%),
+    #090e1b;
+}
+
+.sheet-handle{
+  margin-bottom:8px;
+}
+
+.tracker-top{
+  padding:10px 0;
+}
+
+.tracker-top h2{
+  font-size:32px;
+}
+
+.tracker-metrics{
+  grid-template-columns:1.3fr 1fr 1fr;
+  margin:8px 0;
+}
+
+.tracker-metrics>div{
+  min-height:105px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+#tracker-map{
+  flex:1;
+  min-height:230px;
+  height:auto;
+  border:2px solid #344968;
+  border-radius:22px;
+}
+
+.tracker-controls{
+  margin-top:8px;
+}
+
+.tracker-controls .btn{
+  min-height:62px;
+  font-size:15px;
+}
+
+.tracker-footnote{
+  margin:5px 0;
+  font-size:10px;
+}
+
+@media(max-height:700px){
+  .tracker-sheet{gap:6px;padding-top:12px}
+  .tracker-metrics>div{min-height:78px}
+  #tracker-map{min-height:160px}
+}
 </style>
 </head>
 <body>
