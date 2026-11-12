@@ -8,15 +8,9 @@
   "theme_color": "#090e1b",
   "icons": [
     {
-      "src": "assets/striden-icon.png",
-      "sizes": "1242x1242",
+      "src": "assets/striden-logo.png",
+      "sizes": "1536x1536",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "assets/striden-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]
