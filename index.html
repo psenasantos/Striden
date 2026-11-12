@@ -298,8 +298,8 @@ async function ensureProfile(){
  updateWelcome();
 }
 function updateWelcome(){
- const name=profile?.full_name||
-  currentUser?.user_metadata?.full_name||
+const name=profile?.username||
+  profile?.full_name||
   currentUser?.email?.split("@")[0]||"atleta";
 
  $("welcome-name").textContent=name;
