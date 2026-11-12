@@ -297,7 +297,6 @@ async function ensureProfile(){
  }
  updateWelcome();
 }
-
 function updateWelcome(){
  const name=profile?.full_name||
   currentUser?.user_metadata?.full_name||
@@ -308,7 +307,6 @@ function updateWelcome(){
 }
 
 function loadProfileForm(){
- $("profile-name").value=profile?.full_name||"";
  $("profile-username").value=profile?.username||"";
 }
 
@@ -316,19 +314,16 @@ $("profile-form").addEventListener("submit",async e=>{
  e.preventDefault();
  if(!currentUser)return;
 
- const full_name=$("profile-name").value.trim();
  const username=$("profile-username").value.trim().replace(/^@/,"");
-
- if(!full_name||!username){
-  $("profile-message").textContent="Preencha os dois campos.";
-  return;
- }
+ const full_name=profile?.full_name||
+  currentUser?.user_metadata?.full_name||
+  currentUser?.email?.split("@")[0]||"Atleta";
 
  if(!/^[a-zA-Z0-9_]{3,20}$/.test(username)){
   $("profile-message").textContent="Use 3 a 20 caracteres: letras, números ou _";
   return;
  }
-
+ 
  const button=e.submitter;
  if(button)button.disabled=true;
  $("profile-message").textContent="Salvando...";
@@ -342,15 +337,14 @@ $("profile-form").addEventListener("submit",async e=>{
 
   profile=data;
   updateWelcome();
-  $("profile-message").textContent="Perfil salvo com sucesso!";
-  toast("Perfil atualizado.");
+  $("profile-message").textContent="Nome de usuário salvo com sucesso!";
+  toast("Nome de usuário atualizado.");
  }catch(error){
   $("profile-message").textContent=error.message;
  }finally{
   if(button)button.disabled=false;
  }
 });
-
 $("signout-button").addEventListener("click",async()=>{
  if(activity&&!confirm("Existe uma atividade em andamento. Sair mesmo assim?"))return;
  stopGPS();
