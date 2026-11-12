@@ -292,5 +292,554 @@ async function ensureProfile(){
  }
  updateWelcome();
 }
+
 function updateWelcome(){
- const name=profile?.full_name||cu
+ const name=profile?.full_name||
+  currentUser?.user_metadata?.full_name||
+  currentUser?.email?.split("@")[0]||"atleta";
+
+ $("welcome-name").textContent=name;
+ $("avatar-button").textContent=(name.trim()[0]||"S").toUpperCase();
+}
+
+function loadProfileForm(){
+ $("profile-name").value=profile?.full_name||"";
+ $("profile-username").value=profile?.username||"";
+}
+
+$("profile-form").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!currentUser)return;
+
+ const full_name=$("profile-name").value.trim();
+ const username=$("profile-username").value.trim().replace(/^@/,"");
+
+ if(!full_name||!username){
+  $("profile-message").textContent="Preencha os dois campos.";
+  return;
+ }
+
+ if(!/^[a-zA-Z0-9_]{3,20}$/.test(username)){
+  $("profile-message").textContent="Use 3 a 20 caracteres: letras, números ou _";
+  return;
+ }
+
+ const button=e.submitter;
+ if(button)button.disabled=true;
+ $("profile-message").textContent="Salvando...";
+
+ try{
+  const {data,error}=await supabaseClient.from("profiles")
+   .upsert({id:currentUser.id,full_name,username},{onConflict:"id"})
+   .select().single();
+
+  if(error)throw error;
+
+  profile=data;
+  updateWelcome();
+  $("profile-message").textContent="Perfil salvo com sucesso!";
+  toast("Perfil atualizado.");
+ }catch(error){
+  $("profile-message").textContent=error.message;
+ }finally{
+  if(button)button.disabled=false;
+ }
+});
+
+$("signout-button").addEventListener("click",async()=>{
+ if(activity&&!confirm("Existe uma atividade em andamento. Sair mesmo assim?"))return;
+ stopGPS();
+
+ const {error}=await supabaseClient.auth.signOut();
+
+ if(error){
+  toast(error.message);
+  return;
+ }
+
+ currentUser=null;
+ profile=null;
+ activity=null;
+ showAuth();
+});
+
+/* ATIVIDADES */
+async function refreshDashboard(){
+ if(!currentUser)return;
+
+ const {data:activities,error}=await supabaseClient
+  .from("activities")
+  .select("id,activity_type,distance_meters,duration_seconds,started_at,created_at")
+  .eq("user_id",currentUser.id)
+  .order("started_at",{ascending:false})
+  .limit(100);
+
+ if(error)throw error;
+
+ const total=(activities||[]).reduce(
+  (sum,a)=>sum+Number(a.distance_meters||0),0
+ );
+
+ $("stat-distance").innerHTML=
+  formatDistance(total).replace(" km","")+" <small>km</small>";
+
+ $("stat-activities").textContent=(activities||[]).length;
+ renderActivities(activities||[]);
+
+ const {count,error:terrError}=await supabaseClient
+  .from("territories")
+  .select("id",{count:"exact",head:true})
+  .eq("owner_id",currentUser.id);
+
+ if(!terrError)$("stat-territories").textContent=count||0;
+}
+
+function activityCard(a){
+ const type=sportNames[a.activity_type]||"Atividade";
+ const icon=sportIcons[a.activity_type]||"🏅";
+
+ return `<article class="activity-item">
+  <div class="item-top">
+   <div>
+    <div class="item-title">${icon} ${escapeHTML(type)}</div>
+    <div class="item-sub">
+     ${formatDate(a.started_at||a.created_at)} ·
+     ${formatDuration(a.duration_seconds)}
+    </div>
+   </div>
+   <div class="item-distance">${formatDistance(a.distance_meters)}</div>
+  </div>
+ </article>`;
+}
+
+function renderActivities(list){
+ const recent=list.slice(0,3);
+
+ $("recent-activities").innerHTML=recent.length
+  ?recent.map(activityCard).join("")
+  :'<div class="empty-state">Você ainda não registrou atividades. Que tal começar agora?</div>';
+
+ $("all-activities").innerHTML=list.length
+  ?list.map(activityCard).join("")
+  :'<div class="empty-state">Nenhuma atividade registrada ainda.</div>';
+}
+
+/* DESAFIOS */
+async function loadChallenges(){
+ if(!currentUser)return;
+
+ const box=$("challenge-list");
+
+ const {data:challenges,error}=await supabaseClient
+  .from("challenges")
+  .select("id,title,description,challenge_type,target_value,starts_at,ends_at")
+  .order("created_at",{ascending:false});
+
+ if(error){
+  box.innerHTML='<div class="empty-state">Não foi possível carregar os desafios: '+
+   escapeHTML(error.message)+'</div>';
+  return;
+ }
+
+ if(!challenges?.length){
+  box.innerHTML='<div class="empty-state">Ainda não há desafios cadastrados.</div>';
+  return;
+ }
+
+ const {data:joined,error:joinError}=await supabaseClient
+  .from("challenge_participants")
+  .select("challenge_id")
+  .eq("user_id",currentUser.id);
+
+ if(joinError){
+  toast("Erro ao verificar participação nos desafios.");
+  return;
+ }
+
+ const joinedIds=new Set((joined||[]).map(x=>x.challenge_id));
+
+ box.innerHTML=challenges.map(c=>{
+  const joined=joinedIds.has(c.id);
+  const target=Number(c.target_value||0);
+
+  const targetText=c.challenge_type==="distance"
+   ?formatDistance(target)
+   :c.challenge_type==="duration"
+    ?formatDuration(target)
+    :target+" atividades";
+
+  return `<article class="challenge-item">
+   <div class="item-title">${escapeHTML(c.title)}</div>
+   <p class="item-sub">${escapeHTML(c.description||"Desafio STRIDEN")}</p>
+   <p class="item-sub">Meta: ${targetText}</p>
+   <p class="item-sub">
+    Início: ${formatDate(c.starts_at)} · Fim: ${formatDate(c.ends_at)}
+   </p>
+   <button class="btn ${joined?"btn-outline":"btn-primary"} join-challenge"
+    data-id="${escapeHTML(c.id)}" ${joined?"disabled":""}>
+    ${joined?"Você está participando":"Participar do desafio"}
+   </button>
+  </article>`;
+ }).join("");
+
+ box.querySelectorAll(".join-challenge").forEach(button=>{
+  button.addEventListener("click",()=>{
+   joinChallenge(button.dataset.id,button);
+  });
+ });
+}
+
+async function joinChallenge(id,button){
+ button.disabled=true;
+
+ try{
+  const {error}=await supabaseClient
+   .from("challenge_participants")
+   .insert({challenge_id:id,user_id:currentUser.id});
+
+  if(error)throw error;
+
+  toast("Você entrou no desafio!");
+  await loadChallenges();
+ }catch(error){
+  toast(error.code==="23505"
+   ?"Você já participa deste desafio."
+   :error.message);
+  button.disabled=false;
+ }
+}
+
+/* RASTREADOR GPS */
+function startActivity(sport){
+ if(!navigator.geolocation){
+  toast("Seu navegador não oferece suporte ao GPS.");
+  return;
+ }
+
+ if(!window.isSecureContext){
+  toast("O GPS exige conexão HTTPS.");
+  return;
+ }
+
+ if(activity){
+  toast("Já existe uma atividade em andamento.");
+  return;
+ }
+
+ activity={
+  sport,
+  distance:0,
+  elapsed:0,
+  startedAt:new Date(),
+  lastPoint:null,
+  points:[],
+  paused:false
+ };
+
+ $("tracker-title").textContent=sportNames[sport];
+ $("track-distance").innerHTML='0.00 <small>km</small>';
+ $("track-time").textContent="00:00";
+ $("track-pace").textContent="--:--";
+ $("gps-warning").textContent="Buscando sinal GPS...";
+ $("pause-button").textContent="Pausar";
+ $("tracker").classList.remove("hidden");
+
+ setTimeout(()=>{
+  if(!activity)return;
+
+  if(!window.L){
+   $("gps-warning").textContent="Mapa indisponível. O GPS ainda pode funcionar.";
+   startGPS();
+   return;
+  }
+
+  if(!trackerMap){
+   trackerMap=L.map("tracker-map").setView([-14.2,-51.9],4);
+   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:19,
+    attribution:"&copy; OpenStreetMap"
+   }).addTo(trackerMap);
+  }
+
+  trackerMap.invalidateSize();
+
+  if(routeLine)routeLine.remove();
+
+  routeLine=L.polyline([],{color:"#c5f542",weight:5}).addTo(trackerMap);
+  trackerMarker=null;
+
+  startGPS();
+ },250);
+
+ startTimer();
+}
+
+function startGPS(){
+ if(!activity||activity.paused)return;
+
+ if(watchId!==null){
+  navigator.geolocation.clearWatch(watchId);
+ }
+
+ watchId=navigator.geolocation.watchPosition(
+  onGPSPosition,
+  error=>{
+   $("gps-warning").textContent=gpsError(error);
+  },
+  {
+   enableHighAccuracy:true,
+   maximumAge:1000,
+   timeout:20000
+  }
+ );
+}
+
+function onGPSPosition(position){
+ if(!activity||activity.paused)return;
+
+ const c=position.coords;
+ const point={lat:c.latitude,lng:c.longitude};
+ const accuracy=c.accuracy||999;
+
+ if(accuracy>40){
+  $("gps-warning").textContent=
+   "Sinal GPS impreciso ("+Math.round(accuracy)+" m). Procurando sinal melhor...";
+  return;
+ }
+
+ $("gps-warning").textContent=
+  "GPS conectado · Precisão aproximada de "+Math.round(accuracy)+" m";
+
+ if(activity.lastPoint){
+  const meters=haversine(activity.lastPoint,point);
+  const seconds=Math.max(
+   1,(position.timestamp-activity.lastPoint.time)/1000
+  );
+  const speed=meters/seconds;
+  const maxSpeed=activity.sport==="ride"?25:8;
+
+  if(meters>=2&&speed<=maxSpeed){
+   activity.distance+=meters;
+   activity.points.push([point.lat,point.lng]);
+   if(routeLine)routeLine.addLatLng([point.lat,point.lng]);
+  }else if(meters>100){
+   $("gps-warning").textContent=
+    "Deslocamento descartado por segurança do GPS.";
+  }
+ }else{
+  activity.points.push([point.lat,point.lng]);
+  if(routeLine)routeLine.addLatLng([point.lat,point.lng]);
+ }
+
+ activity.lastPoint={
+  lat:point.lat,
+  lng:point.lng,
+  time:position.timestamp
+ };
+
+ if(trackerMap){
+  trackerMap.setView([point.lat,point.lng],17);
+
+  if(trackerMarker){
+   trackerMarker.setLatLng([point.lat,point.lng]);
+  }else{
+   trackerMarker=L.circleMarker([point.lat,point.lng],{
+    radius:8,
+    color:"#fff",
+    weight:2,
+    fillColor:"#c5f542",
+    fillOpacity:1
+   }).addTo(trackerMap);
+  }
+ }
+
+ updateTrackerMetrics();
+}
+
+function startTimer(){
+ clearInterval(timerId);
+
+ timerId=setInterval(()=>{
+  if(activity&&!activity.paused){
+   activity.elapsed++;
+   updateTrackerMetrics();
+  }
+ },1000);
+}
+
+function updateTrackerMetrics(){
+ if(!activity)return;
+
+ $("track-distance").innerHTML=
+  (activity.distance/1000).toFixed(2)+" <small>km</small>";
+
+ $("track-time").textContent=formatDuration(activity.elapsed);
+
+ if(activity.distance>=20){
+  const pace=activity.elapsed/(activity.distance/1000);
+  const min=Math.floor(pace/60);
+  const sec=Math.floor(pace%60);
+
+  $("track-pace").textContent=
+   String(min).padStart(2,"0")+":"+
+   String(sec).padStart(2,"0");
+ }else{
+  $("track-pace").textContent="--:--";
+ }
+}
+
+function stopGPS(){
+ if(watchId!==null){
+  navigator.geolocation.clearWatch(watchId);
+  watchId=null;
+ }
+
+ clearInterval(timerId);
+ timerId=null;
+}
+
+$("pause-button").addEventListener("click",()=>{
+ if(!activity)return;
+
+ if(!activity.paused){
+  activity.paused=true;
+  stopGPS();
+  $("pause-button").textContent="Continuar";
+  $("gps-warning").textContent="Atividade pausada.";
+ }else{
+  activity.paused=false;
+  activity.lastPoint=null;
+  $("pause-button").textContent="Pausar";
+  $("gps-warning").textContent="Retomando GPS...";
+  startGPS();
+  startTimer();
+ }
+});
+
+$("tracker-close").addEventListener("click",()=>{
+ if(!activity)return;
+
+ if(!confirm("Deseja descartar esta atividade?"))return;
+
+ stopGPS();
+ activity=null;
+ $("tracker").classList.add("hidden");
+});
+
+$("finish-button").addEventListener("click",finishActivity);
+
+async function finishActivity(){
+ if(!activity||!currentUser)return;
+
+ const finished=activity;
+
+ if(finished.distance<20||finished.elapsed<10){
+  stopGPS();
+  activity=null;
+  $("tracker").classList.add("hidden");
+  toast("Atividade muito curta para ser salva. Tente novamente.");
+  return;
+ }
+
+ $("finish-button").disabled=true;
+ $("finish-button").textContent="Salvando...";
+ stopGPS();
+
+ try{
+  const {error}=await supabaseClient
+   .from("activities")
+   .insert({
+    user_id:currentUser.id,
+    activity_type:finished.sport,
+    distance_meters:Math.round(finished.distance),
+    duration_seconds:finished.elapsed,
+    started_at:finished.startedAt.toISOString()
+   });
+
+  if(error)throw error;
+
+  activity=null;
+  $("tracker").classList.add("hidden");
+  toast("Atividade salva com sucesso!");
+  await refreshDashboard();
+ }catch(error){
+  activity=finished;
+  toast("Não foi possível salvar: "+error.message);
+ }finally{
+  $("finish-button").disabled=false;
+  $("finish-button").textContent="Finalizar atividade";
+ }
+}
+
+/* NAVEGAÇÃO */
+document.querySelectorAll("[data-view]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  showView(button.dataset.view);
+ });
+});
+
+document.querySelectorAll("[data-go]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  showView(button.dataset.go);
+ });
+});
+
+document.querySelectorAll("[data-sport]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  startActivity(button.dataset.sport);
+ });
+});
+
+$("locate-button").addEventListener("click",locateUser);
+$("avatar-button").addEventListener("click",()=>showView("profile"));
+
+/* INICIALIZAÇÃO */
+async function boot(){
+ setConnection("Conectando");
+
+ try{
+  if(!window.supabase){
+   throw new Error("Biblioteca Supabase não carregou. Verifique sua conexão.");
+  }
+
+  supabaseClient=window.supabase.createClient(
+   SUPABASE_URL,
+   SUPABASE_KEY
+  );
+
+  const {data,error}=await supabaseClient.auth.getSession();
+
+  if(error)throw error;
+
+  if(data.session){
+   await handleSession(data.session);
+  }else{
+   setConnection("Desconectado");
+   showAuth();
+  }
+
+  supabaseClient.auth.onAuthStateChange((event,session)=>{
+   if(event==="SIGNED_OUT"){
+    currentUser=null;
+    profile=null;
+    stopGPS();
+    activity=null;
+    showAuth();
+   }
+  });
+
+ }catch(error){
+  console.error(error);
+  setConnection("Erro de conexão");
+  showAuth();
+  $("auth-message").textContent="Erro ao conectar: "+error.message;
+ }
+}
+
+boot();
+
+})();
+ </script>
+</body>
+</html>
+                                 
