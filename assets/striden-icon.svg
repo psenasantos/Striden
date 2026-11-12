@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#263b3b"/><stop offset="1" stop-color="#102322"/>
+    </linearGradient>
+    <clipPath id="clip"><rect width="512" height="512" rx="112"/></clipPath>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="512" height="512" fill="url(#bg)"/>
+    <!-- Mapa-múndi discreto preservado como textura de fundo -->
+    <path d="M-18 40l68-28 54 20 26 40-23 34-42-7-25 36-58-17zm286-30l49 17 20 37-29 29-42-11-18-34zm135 18l69 13 27 48-37 29-44-17-35-39zM-8 319l58-27 43 20 18 54-35 44-68-13zm338 81l57-34 65 16 35 49-44 54-83-9-44-39z" fill="#49615b" opacity=".30"/>
+    <path d="M0 350 Q120 340 220 354 T512 348 M350 0 Q338 125 352 250 T348 512" fill="none" stroke="#78918a" stroke-width="3" opacity=".28"/>
+    <!-- Estrada em S: verde sálvia discreto, com faixa central tracejada -->
+    <path d="M145 126 H280 C350 126 385 164 385 218 C385 273 345 304 292 304 C239 304 208 270 172 286 C145 298 135 321 135 355 V421"
+          fill="none" stroke="#0c211f" stroke-width="82" stroke-linecap="butt" stroke-linejoin="round"/>
+    <path d="M145 126 H280 C350 126 385 164 385 218 C385 273 345 304 292 304 C239 304 208 270 172 286 C145 298 135 321 135 355 V421"
+          fill="none" stroke="#9bb994" stroke-width="58" stroke-linecap="butt" stroke-linejoin="round"/>
+    <path d="M145 126 H280 C350 126 385 164 385 218 C385 273 345 304 292 304 C239 304 208 270 172 286 C145 298 135 321 135 355 V421"
+          fill="none" stroke="#dce5c8" stroke-width="4" stroke-dasharray="16 18" opacity=".8"/>
+  </g>
+</svg>

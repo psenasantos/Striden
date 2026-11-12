@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" type="image/svg+xml" href="assets/striden-icon.png">
+<link rel="apple-touch-icon" href="assets/striden-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>STRIDEN — Run • Ride • Conquer</title>
+<style>
+:root{--bg:#090e1b;--panel:#111a2d;--panel2:#17233a;--muted:#8e9bb4;--text:#f4f7ff;--lime:#b8f36b;--blue:#63c7ff;--pink:#ff668f}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#1b3150 0,#090e1b 48%);color:var(--text);font:15px Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:480px;margin:auto;min-height:100vh;padding:18px 16px 100px}
+header{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 20px}.brand{font-weight:900;letter-spacing:2px;font-size:22px}.brand span{color:var(--lime)}.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#b8f36b,#42a9dc);display:grid;place-items:center;color:#101827;font-weight:900}
+.eyebrow{color:var(--lime);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}.hello{font-size:26px;font-weight:850;margin:5px 0 3px}.sub{color:var(--muted);margin:0 0 17px}
+.mapcard{position:relative;overflow:hidden;border:1px solid #2b3c58;border-radius:25px;background:#14243a;box-shadow:0 18px 50px #0006}
+.maphead{position:absolute;z-index:2;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center}.chip{background:#0a1425df;border:1px solid #ffffff20;padding:8px 11px;border-radius:30px;font-size:11px;font-weight:750;backdrop-filter:blur(8px)}.live{color:var(--lime)}.map{display:block;width:100%;height:330px}
+.mapfoot{position:absolute;bottom:13px;left:13px;right:13px;display:flex;justify-content:space-between;align-items:end}.legend{background:#0a1425e8;padding:10px 12px;border-radius:14px;font-size:11px;color:#dce6f6;line-height:1.8}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:15px 0}.stat{background:var(--panel);border:1px solid #ffffff0c;border-radius:17px;padding:13px 11px}.stat b{display:block;font-size:20px;margin-top:5px}.stat small{color:var(--muted);font-size:11px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:13px 0 20px}.btn{border:0;border-radius:15px;padding:15px 12px;font-weight:850;font-size:14px;cursor:pointer}.primary{background:var(--lime);color:#111b23}.secondary{background:#1b2b43;color:#eaf2ff;border:1px solid #30435f}
+.sectiontitle{display:flex;justify-content:space-between;align-items:center;margin:21px 2px 11px}.sectiontitle h2{font-size:17px;margin:0}.sectiontitle a{color:var(--lime);font-size:12px}
+.territory{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid #ffffff0c;border-radius:17px;padding:13px;margin-bottom:9px}.territoryicon{width:43px;height:43px;border-radius:13px;background:#253b32;display:grid;place-items:center;font-size:21px}.territory b{display:block;font-size:13px}.territory small{color:var(--muted);font-size:11px}.territory strong{margin-left:auto;color:var(--lime);font-size:13px}
+nav{position:fixed;z-index:5;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:#0c1424f2;border-top:1px solid #ffffff14;padding:10px 8px calc(10px + env(safe-area-inset-bottom));backdrop-filter:blur(16px)}
+nav button{background:none;border:0;color:#8291aa;font-size:10px;display:grid;gap:4px;justify-items:center;cursor:pointer}nav button.active{color:var(--lime)}nav i{font-style:normal;font-size:19px}
+.modal{display:none;position:fixed;inset:0;background:#0009;z-index:10;align-items:end;justify-content:center}.modal.show{display:flex}.sheet{width:min(480px,100%);background:#121d31;border:1px solid #334765;border-radius:24px 24px 0 0;padding:23px 20px 30px}.sheet h2{margin:0 0 8px}.sheet p{color:var(--muted);line-height:1.5}.close{float:right;background:#25344d;color:white;border:0;border-radius:50%;width:32px;height:32px;font-size:18px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#e7ffbd;color:#142018;padding:12px 17px;border-radius:30px;font-weight:800;font-size:12px;display:none;z-index:20;white-space:nowrap}
+@media(min-width:700px){body{padding:25px}.app{border:1px solid #24334b;border-radius:28px;min-height:900px;background:#0b1221}}
+</style>
+</head>
+<body>
+<main class="app">
+<header><div class="brand">STRI<span>DEN</span></div><div class="avatar">S</div></header>
+<div class="eyebrow">Seu próximo território começa aqui</div>
+<div class="hello">Olá, atleta 👋</div>
+<p class="sub">Explore a cidade. Conquiste seu espaço.</p>
+
+<section class="mapcard" aria-label="Mapa demonstrativo de territórios">
+<div class="maphead"><span class="chip"><span class="live">●</span> MAPA DA CIDADE</span><span class="chip">⌖ Salvador, BA</span></div>
+<svg class="map" viewBox="0 0 440 330" role="img" aria-label="Mapa ilustrativo com territórios coloridos">
+<defs><pattern id="grid" width="34" height="34" patternUnits="userSpaceOnUse"><path d="M34 0H0V34" fill="none" stroke="#49617a" stroke-width="1" opacity=".42"/></pattern><linearGradient id="land" x2="1" y2="1"><stop stop-color="#203d52"/><stop offset="1" stop-color="#14283e"/></linearGradient></defs>
+<rect width="440" height="330" fill="url(#land)"/><rect width="440" height="330" fill="url(#grid)"/>
+<path d="M-20 65L460 255M-20 250L460 80M75 -20L300 350M350 -20L140 350" stroke="#7890a6" stroke-width="9" opacity=".22" fill="none"/>
+<path d="M-20 65L460 255M-20 250L460 80M75 -20L300 350M350 -20L140 350" stroke="#9db1c4" stroke-width="2" opacity=".5" fill="none"/>
+<g fill="#31506a" opacity=".8"><rect x="22" y="25" width="53" height="26" rx="4"/><rect x="98" y="28" width="62" height="24" rx="4"/><rect x="185" y="23" width="49" height="30" rx="4"/><rect x="280" y="27" width="68" height="25" rx="4"/><rect x="365" y="24" width="48" height="28" rx="4"/><rect x="25" y="270" width="58" height="30" rx="4"/><rect x="110" y="274" width="55" height="26" rx="4"/><rect x="285" y="270" width="60" height="29" rx="4"/><rect x="370" y="270" width="45" height="26" rx="4"/></g>
+<path d="M105 106L184 78L270 111L302 185L252 247L158 238L91 179Z" fill="#b8f36b" fill-opacity=".22" stroke="#c7ff79" stroke-width="3"/>
+<path d="M270 111L347 95L395 155L365 222L302 185Z" fill="#63c7ff" fill-opacity=".2" stroke="#63c7ff" stroke-width="3"/>
+<path d="M158 238L252 247L302 185L365 222L325 292L198 305Z" fill="#ff668f" fill-opacity=".14" stroke="#ff668f" stroke-width="2.5" stroke-dasharray="6 5"/>
+<path d="M125 155L151 116L225 102L278 139L265 205L215 231L145 207Z" fill="none" stroke="#d7ff9a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="125" cy="155" r="6" fill="#d7ff9a"/><circle cx="265" cy="205" r="6" fill="#d7ff9a"/>
+<g><circle cx="214" cy="166" r="14" fill="#b8f36b"/><circle cx="214" cy="166" r="5" fill="#102018"/><circle cx="214" cy="166" r="22" fill="none" stroke="#b8f36b" opacity=".35"/></g>
+<g fill="#eaf4ff" font-family="Arial" font-size="10" font-weight="700"><text x="130" y="145">SEU TERRITÓRIO</text><text x="315" y="145">RIVAL</text><text x="228" y="278">EM DISPUTA</text></g>
+</svg>
+<div class="mapfoot"><div class="legend"><div><span class="dot" style="background:#b8f36b"></span>Seu território</div><div><span class="dot" style="background:#63c7ff"></span>Outro atleta</div><div><span class="dot" style="background:#ff668f"></span>Em disputa</div></div><span class="chip">◎ Explorar</span></div>
+</section>
+
+<div class="stats"><div class="stat"><small>Território</small><b>2,4 <small>km²</small></b></div><div class="stat"><small>Atividades</small><b>18</b></div><div class="stat"><small>Posição</small><b>#12</b></div></div>
+<div class="actions"><button class="btn primary" onclick="openActivity()">▶ Iniciar atividade</button><button class="btn secondary" onclick="toast('Mapa ilustrativo: mapa real e GPS ainda serão integrados.')">⌖ Ver mapa completo</button></div>
+<div class="sectiontitle"><h2>Seus territórios</h2><a onclick="toast('Lista completa em breve')">Ver todos</a></div>
+<div class="territory"><div class="territoryicon">🏙️</div><div><b>Centro • Setor Norte</b><small>Conquistado por você · há 2 dias</small></div><strong>1,6 km²</strong></div>
+<div class="territory"><div class="territoryicon">🌳</div><div><b>Parque • Circuito Leste</b><small>Território protegido</small></div><strong>0,8 km²</strong></div>
+</main>
+<nav><button class="active" onclick="navTo(this,'Mapa')"><i>⌖</i>Mapa</button><button onclick="navTo(this,'Atividades')"><i>◷</i>Atividades</button><button onclick="navTo(this,'Ranking')"><i>♜</i>Ranking</button><button onclick="navTo(this,'Perfil')"><i>●</i>Perfil</button></nav>
+<div class="modal" id="modal" onclick="if(event.target===this)closeActivity()"><div class="sheet"><button class="close" onclick="closeActivity()">×</button><div class="eyebrow">Nova atividade</div><h2>Como você vai explorar?</h2><p>Escolha uma modalidade para começar. Esta é uma prévia navegável. O registro real por GPS será conectado numa próxima etapa.</p><div class="actions"><button class="btn primary" onclick="startDemo('Corrida')">🏃 Corrida</button><button class="btn secondary" onclick="startDemo('Ciclismo')">🚴 Ciclismo</button></div><button class="btn secondary" style="width:100%" onclick="startDemo('Caminhada')">🚶 Caminhada</button></div></div>
+<div class="toast" id="toast"></div>
+<script>
+function openActivity(){document.getElementById('modal').classList.add('show')}
+function closeActivity(){document.getElementById('modal').classList.remove('show')}
+function startDemo(mode){closeActivity();toast(mode+' selecionada! O rastreamento GPS ainda será implementado.')}
+function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window._tt);window._tt=setTimeout(()=>t.style.display='none',3200)}
+function navTo(el,name){document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));el.classList.add('active');if(name!=='Mapa')toast(name+' será implementado nas próximas etapas.')}
+</script>
+</body></html>

@@ -1,0 +1,11 @@
+{
+  "name": "STRIDEN — Run, Ride & Conquer",
+  "short_name": "STRIDEN",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#102322",
+  "theme_color": "#102322",
+  "icons": [
+    { "src": "assets/striden-icon.png", "sizes": "1242x1242", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
