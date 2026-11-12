@@ -7,57 +7,38 @@
 <meta name="theme-color" content="#090e1b">
 <meta name="description" content="STRIDEN — Run, Ride, Conquer">
 <title>STRIDEN — Run • Ride • Conquer</title>
-
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
 <style>
-:root{
-  --bg:#090e1b;--panel:#111a2b;--panel2:#172338;
-  --lime:#c5f542;--blue:#4d9fff;--text:#f5f7fb;
-  --muted:#91a0b7;--line:#26344b;--red:#ff657b;
-}
+:root{--bg:#090e1b;--panel:#111a2b;--panel2:#172338;--lime:#c5f542;--blue:#4d9fff;--text:#f5f7fb;--muted:#91a0b7;--line:#26344b;--red:#ff657b}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);
-font-family:Inter,system-ui,-apple-system,Arial,sans-serif}
-button,input{font:inherit}
-button{cursor:pointer}
-.hidden{display:none!important}
-.muted{color:var(--muted);line-height:1.5}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Arial,sans-serif}
+button,input{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}
+.hidden{display:none!important}.muted{color:var(--muted);line-height:1.5}
 .eyebrow{font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800}
 .brand{font-size:24px;font-weight:950;letter-spacing:-1.5px;color:white;text-decoration:none}
-.brand span{color:var(--lime)}
-.brand-large{font-size:42px}
+.brand span{color:var(--lime)}.brand-large{font-size:42px}
 .auth-wrap{min-height:100dvh;display:grid;place-items:center;padding:22px}
-.auth-card{width:100%;max-width:420px;background:var(--panel);padding:30px;
-border:1px solid var(--line);border-radius:24px}
+.auth-card{width:100%;max-width:420px;background:var(--panel);padding:30px;border:1px solid var(--line);border-radius:24px}
 .auth-card h1{font-size:27px;line-height:1.15;margin:20px 0 8px}
 label{display:block;font-size:12px;color:var(--muted);margin:17px 0 7px}
-input{width:100%;padding:14px;background:#0b1423;border:1px solid var(--line);
-border-radius:11px;color:white;outline:none}
+input{width:100%;padding:14px;background:#0b1423;border:1px solid var(--line);border-radius:11px;color:white;outline:none}
 input:focus{border-color:var(--lime)}
 .btn{border:0;border-radius:12px;padding:14px 18px;font-weight:800}
 .btn-primary{background:var(--lime);color:#101728}
 .btn-outline{background:transparent;border:1px solid var(--line);color:white}
-.full{width:100%;margin-top:20px}
-.text-button{background:none;border:0;color:var(--lime);padding:14px 0}
-.form-message{font-size:13px;color:var(--muted);min-height:18px}
+.full{width:100%;margin-top:20px}.text-button{background:none;border:0;color:var(--lime);padding:14px 0}
+.form-message{font-size:13px;color:var(--muted);min-height:18px;overflow-wrap:anywhere}
 .app-shell{max-width:900px;margin:auto;padding:0 16px 105px}
-.topbar{height:66px;display:flex;align-items:center;justify-content:space-between;
-border-bottom:1px solid var(--line)}
-.top-actions{display:flex;align-items:center;gap:12px}
-.status-pill{font-size:11px;color:var(--muted)}
-.status-pill i{display:inline-block;width:7px;height:7px;border-radius:50%;
-background:var(--lime);margin-right:6px}
-.avatar{width:38px;height:38px;border-radius:50%;border:1px solid var(--lime);
-background:var(--panel2);color:var(--lime);font-weight:900}
-.welcome{padding:25px 0 12px}
-.welcome h1{font-size:25px;margin:8px 0}
+.topbar{height:66px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.top-actions{display:flex;align-items:center;gap:12px}.status-pill{font-size:11px;color:var(--muted)}
+.status-pill i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lime);margin-right:6px}
+.avatar{width:38px;height:38px;border-radius:50%;border:1px solid var(--lime);background:var(--panel2);color:var(--lime);font-weight:900}
+.welcome{padding:25px 0 12px}.welcome h1{font-size:25px;margin:8px 0}
 .view{display:none}.view.active{display:block}
 .map-panel{padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:17px}
 .map-heading,.section-heading,.tracker-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .map-heading h2,.section-heading h2{font-size:18px;margin:5px 0 12px}
-.icon-button{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);
-background:var(--panel2);color:white;font-size:22px}
+.icon-button{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:white;font-size:22px}
 #city-map{height:310px;border-radius:13px;overflow:hidden;background:#172338}
 .map-legend{display:flex;gap:20px;padding:13px 2px 2px;font-size:11px;color:var(--muted)}
 .legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
@@ -65,378 +46,251 @@ background:var(--panel2);color:white;font-size:22px}
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:15px 0 26px}
 .stat-card{padding:14px 10px;background:var(--panel);border:1px solid var(--line);border-radius:14px}
 .stat-card span,.tracker-metrics span{font-size:11px;color:var(--muted);display:block}
-.stat-card strong{font-size:21px;display:block;margin-top:7px}
-.stat-card small{font-size:11px;color:var(--muted)}
-.section-heading{margin:23px 0 10px}
-.activity-launch{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.stat-card strong{font-size:21px;display:block;margin-top:7px}.stat-card small{font-size:11px;color:var(--muted)}
+.section-heading{margin:23px 0 10px}.activity-launch{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .sport-card{padding:15px 8px;text-align:center;color:white}
-.sport-card:active{border-color:var(--lime)}
-.sport-icon{font-size:27px;display:block;margin-bottom:8px}
-.sport-card b,.sport-card small{display:block}
-.sport-card b{font-size:13px}
+.sport-card:active{border-color:var(--lime)}.sport-icon{font-size:27px;display:block;margin-bottom:8px}
+.sport-card b,.sport-card small{display:block}.sport-card b{font-size:13px}
 .sport-card small{font-size:10px;color:var(--muted);margin-top:5px}
-.page-title{padding:25px 0 15px}
-.page-title h2{font-size:27px;margin:6px 0}
+.page-title{padding:25px 0 15px}.page-title h2{font-size:27px;margin:6px 0}
 .activity-list,.ranking-list,.challenge-list{display:grid;gap:10px}
-.activity-item,.ranking-item,.challenge-item{padding:15px}
+.activity-item,.ranking-item,.challenge-item{padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:14px}
 .item-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
-.item-title{font-weight:800}
-.item-sub{font-size:12px;color:var(--muted);margin-top:5px}
+.item-title{font-weight:800}.item-sub{font-size:12px;color:var(--muted);margin-top:5px}
 .item-distance{font-weight:900;color:var(--lime);white-space:nowrap}
-.empty-state{padding:25px;text-align:center;color:var(--muted);
-background:var(--panel);border:1px dashed var(--line);border-radius:15px;font-size:13px}
-.panel{padding:18px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:500;
-display:flex;justify-content:space-around;gap:2px;padding:9px 4px calc(9px + env(safe-area-inset-bottom));
-background:#0c1423f2;border-top:1px solid var(--line);backdrop-filter:blur(15px)}
-.nav-item{border:0;background:none;color:var(--muted);font-size:10px;
-display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;padding:5px 0}
-.nav-item span{font-size:20px}
-.nav-item.active{color:var(--lime)}
+.empty-state{padding:25px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:15px;font-size:13px}
+.panel{padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:15px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:500;display:flex;justify-content:space-around;gap:2px;padding:9px 4px calc(9px + env(safe-area-inset-bottom));background:#0c1423f2;border-top:1px solid var(--line);backdrop-filter:blur(15px)}
+.nav-item{border:0;background:none;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;padding:5px 0}
+.nav-item span{font-size:20px}.nav-item.active{color:var(--lime)}
 .signout{margin-top:25px}
-.tracker{position:fixed;inset:0;z-index:1000;background:#050914eF;
-display:flex;align-items:flex-end}
-.tracker-sheet{width:100%;max-width:700px;margin:auto;background:var(--bg);
-border:1px solid var(--line);border-radius:25px 25px 0 0;padding:18px 18px calc(20px + env(safe-area-inset-bottom));
-max-height:95dvh;overflow:auto}
+.tracker{position:fixed;inset:0;z-index:1000;background:#050914ef;display:flex;align-items:flex-end}
+.tracker-sheet{width:100%;max-width:700px;margin:auto;background:var(--bg);border:1px solid var(--line);border-radius:25px 25px 0 0;padding:18px 18px calc(20px + env(safe-area-inset-bottom));max-height:95dvh;overflow:auto}
 .sheet-handle{width:42px;height:4px;background:#46536a;border-radius:5px;margin:0 auto 20px}
-.tracker-top h2{margin:5px 0}
-.notice{background:#172338;color:var(--muted);padding:11px;border-radius:10px;
-font-size:12px;margin:15px 0}
+.tracker-top h2{margin:5px 0}.notice{background:#172338;color:var(--muted);padding:11px;border-radius:10px;font-size:12px;margin:15px 0}
 .tracker-metrics{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;margin:20px 0}
 .tracker-metrics strong{display:block;font-size:19px;margin-top:7px}
 .metric-main strong{font-size:29px;color:var(--lime)}
-.tracker-metrics small{font-size:12px}
 #tracker-map{height:220px;border-radius:13px;overflow:hidden;background:#172338}
 .tracker-controls{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin-top:17px}
 .tracker-footnote{font-size:11px;color:var(--muted);line-height:1.5}
-.toast{position:fixed;z-index:2000;bottom:90px;left:50%;transform:translateX(-50%);
-background:#26344b;color:white;padding:12px 17px;border-radius:12px;
-font-size:13px;max-width:90%;text-align:center;box-shadow:0 8px 30px #0008}
+.toast{position:fixed;z-index:2000;bottom:90px;left:50%;transform:translateX(-50%);background:#26344b;color:white;padding:12px 17px;border-radius:12px;font-size:13px;max-width:90%;text-align:center;box-shadow:0 8px 30px #0008}
 .leaflet-container{font-family:inherit}
-@media(min-width:700px){
- .app-shell{padding-left:25px;padding-right:25px}
- #city-map{height:420px}
- .tracker-sheet{border-radius:25px;margin-bottom:20px}
-}
+@media(min-width:700px){.app-shell{padding-left:25px;padding-right:25px}#city-map{height:420px}.tracker-sheet{border-radius:25px;margin-bottom:20px}}
 </style>
 </head>
-
 <body>
-
 <div id="auth-screen" class="auth-wrap">
-  <div class="auth-card">
-    <div class="brand brand-large">STRI<span>DEN</span></div>
-    <p class="eyebrow">RUN • RIDE • CONQUER</p>
-    <h1>Seu próximo território começa aqui.</h1>
-    <p class="muted">Entre para explorar, registrar suas atividades e disputar seu espaço.</p>
-
-    <form id="auth-form">
-      <label for="auth-email">E-mail</label>
-      <input id="auth-email" type="email" autocomplete="email" placeholder="voce@email.com" required>
-      <label for="auth-password">Senha</label>
-      <input id="auth-password" type="password" autocomplete="current-password"
-      minlength="6" placeholder="Mínimo de 6 caracteres" required>
-      <div id="name-field" class="hidden">
-        <label for="auth-name">Como podemos chamar você?</label>
-        <input id="auth-name" type="text" maxlength="40" placeholder="Seu nome">
-      </div>
-      <button id="auth-submit" class="btn btn-primary full" type="submit">Entrar</button>
-    </form>
-    <button id="auth-toggle" class="text-button" type="button">Ainda não tem conta? Criar cadastro</button>
-    <p id="auth-message" class="form-message" role="status"></p>
-  </div>
+ <div class="auth-card">
+  <div class="brand brand-large">STRI<span>DEN</span></div>
+  <p class="eyebrow">RUN • RIDE • CONQUER</p>
+  <h1>Seu próximo território começa aqui.</h1>
+  <p class="muted">Entre para explorar, registrar suas atividades e disputar seu espaço.</p>
+  <form id="auth-form">
+   <label for="auth-email">E-mail</label>
+   <input id="auth-email" type="email" autocomplete="email" placeholder="voce@email.com" required>
+   <label for="auth-password">Senha</label>
+   <input id="auth-password" type="password" autocomplete="current-password" minlength="6" placeholder="Mínimo de 6 caracteres" required>
+   <div id="name-field" class="hidden">
+    <label for="auth-name">Como podemos chamar você?</label>
+    <input id="auth-name" type="text" maxlength="40" placeholder="Seu nome">
+   </div>
+   <button id="auth-submit" class="btn btn-primary full" type="submit">Entrar</button>
+  </form>
+  <button id="auth-toggle" class="text-button" type="button">Ainda não tem conta? Criar cadastro</button>
+  <p id="auth-message" class="form-message" role="status"></p>
+ </div>
 </div>
 
 <main id="app" class="app-shell hidden">
-  <header class="topbar">
-    <a class="brand" href="#">STRI<span>DEN</span></a>
-    <div class="top-actions">
-      <span id="connection-status" class="status-pill"><i></i> Conectando</span>
-      <button id="avatar-button" class="avatar" aria-label="Abrir perfil">S</button>
-    </div>
-  </header>
+ <header class="topbar">
+  <a class="brand" href="#">STRI<span>DEN</span></a>
+  <div class="top-actions"><span id="connection-status" class="status-pill"><i></i> Conectando</span><button id="avatar-button" class="avatar" aria-label="Abrir perfil">S</button></div>
+ </header>
+ <section class="welcome">
+  <p class="eyebrow">SEU PRÓXIMO TERRITÓRIO COMEÇA AQUI</p>
+  <h1>Olá, <span id="welcome-name">atleta</span> 👋</h1>
+  <p class="muted">Explore a cidade. Conquiste seu espaço.</p>
+ </section>
 
-  <section class="welcome">
-    <p class="eyebrow">SEU PRÓXIMO TERRITÓRIO COMEÇA AQUI</p>
-    <h1>Olá, <span id="welcome-name">atleta</span> 👋</h1>
-    <p class="muted">Explore a cidade. Conquiste seu espaço.</p>
-  </section>
+ <section id="view-map" class="view active">
+  <div class="map-panel">
+   <div class="map-heading"><div><span class="eyebrow">MAPA AO VIVO</span><h2>Explore ao seu redor</h2></div><button id="locate-button" class="icon-button" title="Minha localização">⌖</button></div>
+   <div id="city-map" aria-label="Mapa interativo"></div>
+   <div class="map-legend"><span><i class="legend-dot lime"></i>Sua posição</span><span><i class="legend-dot blue"></i>Territórios cadastrados</span></div>
+  </div>
+  <div class="stats-grid">
+   <article class="stat-card"><span>Distância total</span><strong id="stat-distance">0,00 <small>km</small></strong></article>
+   <article class="stat-card"><span>Atividades</span><strong id="stat-activities">0</strong></article>
+   <article class="stat-card"><span>Territórios</span><strong id="stat-territories">0</strong></article>
+  </div>
+  <div class="section-heading"><div><p class="eyebrow">VAMOS NESSA?</p><h2>Comece uma atividade</h2></div></div>
+  <div class="activity-launch">
+   <button class="sport-card panel" data-sport="run"><span class="sport-icon">🏃</span><b>Corrida</b><small>Registre seu ritmo</small></button>
+   <button class="sport-card panel" data-sport="ride"><span class="sport-icon">🚴</span><b>Ciclismo</b><small>Explore mais longe</small></button>
+   <button class="sport-card panel" data-sport="walk"><span class="sport-icon">🚶</span><b>Caminhada</b><small>No seu ritmo</small></button>
+  </div>
+  <div class="section-heading"><div><p class="eyebrow">RECENTES</p><h2>Suas atividades</h2></div><button class="text-button" data-go="activities">Ver todas</button></div>
+  <div id="recent-activities" class="activity-list"><div class="empty-state">Carregando...</div></div>
+ </section>
 
-  <section id="view-map" class="view active">
-    <div class="map-panel">
-      <div class="map-heading">
-        <div><span class="eyebrow">MAPA AO VIVO</span><h2>Explore ao seu redor</h2></div>
-        <button id="locate-button" class="icon-button" title="Minha localização">⌖</button>
-      </div>
-      <div id="city-map" aria-label="Mapa interativo"></div>
-      <div class="map-legend">
-        <span><i class="legend-dot lime"></i>Sua posição</span>
-        <span><i class="legend-dot blue"></i>Territórios cadastrados</span>
-      </div>
-    </div>
-
-    <div class="stats-grid">
-      <article class="stat-card"><span>Distância total</span><strong id="stat-distance">0,0 <small>km</small></strong></article>
-      <article class="stat-card"><span>Atividades</span><strong id="stat-activities">0</strong></article>
-      <article class="stat-card"><span>Territórios</span><strong id="stat-territories">0</strong></article>
-    </div>
-
-    <div class="section-heading"><div><p class="eyebrow">VAMOS NESSA?</p><h2>Comece uma atividade</h2></div></div>
-    <div class="activity-launch">
-      <button class="sport-card" data-sport="run"><span class="sport-icon">🏃</span><b>Corrida</b><small>Registre seu ritmo</small></button>
-      <button class="sport-card" data-sport="ride"><span class="sport-icon">🚴</span><b>Ciclismo</b><small>Explore mais longe</small></button>
-      <button class="sport-card" data-sport="walk"><span class="sport-icon">🚶</span><b>Caminhada</b><small>No seu ritmo</small></button>
-    </div>
-
-    <div class="section-heading">
-      <div><p class="eyebrow">RECENTES</p><h2>Suas atividades</h2></div>
-      <button class="text-button" data-go="activities">Ver todas</button>
-    </div>
-    <div id="recent-activities" class="activity-list"><div class="empty-state">Carregando...</div></div>
-  </section>
-
-  <section id="view-activities" class="view">
-    <div class="page-title"><p class="eyebrow">SEU DESEMPENHO</p><h2>Atividades</h2><p class="muted">Seu histórico de evolução.</p></div>
-    <div id="all-activities" class="activity-list"><div class="empty-state">Carregando...</div></div>
-  </section>
-
-  <section id="view-ranking" class="view">
-    <div class="page-title"><p class="eyebrow">DISPUTE SEU ESPAÇO</p><h2>Ranking</h2>
-    <p class="muted">Atletas com maior distância registrada.</p></div>
-    <div class="empty-state">O ranking global ainda está sendo preparado. Para exibir posições reais com segurança, precisamos configurar uma consulta agregada no Supabase. Nenhuma colocação fictícia será exibida.</div>
-  </section>
-
-  <section id="view-challenges" class="view">
-    <div class="page-title"><p class="eyebrow">SUPERE SEUS LIMITES</p><h2>Desafios</h2><p class="muted">Entre em desafios e acompanhe seu progresso.</p></div>
-    <div id="challenge-list" class="challenge-list"><div class="empty-state">Carregando desafios...</div></div>
-  </section>
-
-  <section id="view-profile" class="view">
-    <div class="page-title"><p class="eyebrow">SUA IDENTIDADE</p><h2>Perfil</h2><p class="muted">Gerencie suas informações.</p></div>
-    <form id="profile-form" class="panel">
-      <label for="profile-name">Nome</label>
-      <input id="profile-name" maxlength="40" required>
-      <label for="profile-username">Nome de usuário</label>
-      <input id="profile-username" maxlength="20" placeholder="seu_usuario" required>
-      <button class="btn btn-primary full" type="submit">Salvar perfil</button>
-      <p id="profile-message" class="form-message"></p>
-    </form>
-    <button id="signout-button" class="btn btn-outline full">Sair da conta</button>
-  </section>
-
-  <nav class="bottom-nav" aria-label="Navegação principal">
-    <button class="nav-item active" data-view="map"><span>⌖</span>Mapa</button>
-    <button class="nav-item" data-view="activities"><span>◷</span>Atividades</button>
-    <button class="nav-item" data-view="ranking"><span>♜</span>Ranking</button>
-    <button class="nav-item" data-view="challenges"><span>⚑</span>Desafios</button>
-    <button class="nav-item" data-view="profile"><span>●</span>Perfil</button>
-  </nav>
+ <section id="view-activities" class="view">
+  <div class="page-title"><p class="eyebrow">SEU DESEMPENHO</p><h2>Atividades</h2><p class="muted">Seu histórico de evolução.</p></div>
+  <div id="all-activities" class="activity-list"><div class="empty-state">Carregando...</div></div>
+ </section>
+ <section id="view-ranking" class="view">
+  <div class="page-title"><p class="eyebrow">DISPUTE SEU ESPAÇO</p><h2>Ranking</h2><p class="muted">Atletas com maior distância registrada.</p></div>
+  <div class="empty-state">O ranking global ainda precisa de uma consulta agregada segura no Supabase. Nenhuma colocação fictícia será exibida.</div>
+ </section>
+ <section id="view-challenges" class="view">
+  <div class="page-title"><p class="eyebrow">SUPERE SEUS LIMITES</p><h2>Desafios</h2><p class="muted">Entre em desafios e acompanhe seu progresso.</p></div>
+  <div id="challenge-list" class="challenge-list"><div class="empty-state">Carregando desafios...</div></div>
+ </section>
+ <section id="view-profile" class="view">
+  <div class="page-title"><p class="eyebrow">SUA IDENTIDADE</p><h2>Perfil</h2><p class="muted">Gerencie suas informações.</p></div>
+  <form id="profile-form" class="panel">
+   <label for="profile-name">Nome</label><input id="profile-name" maxlength="40" required>
+   <label for="profile-username">Nome de usuário</label><input id="profile-username" maxlength="20" placeholder="seu_usuario" required>
+   <button class="btn btn-primary full" type="submit">Salvar perfil</button>
+   <p id="profile-message" class="form-message"></p>
+  </form>
+  <button id="signout-button" class="btn btn-outline full">Sair da conta</button>
+ </section>
+ <nav class="bottom-nav" aria-label="Navegação principal">
+  <button class="nav-item active" data-view="map"><span>⌖</span>Mapa</button>
+  <button class="nav-item" data-view="activities"><span>◷</span>Atividades</button>
+  <button class="nav-item" data-view="ranking"><span>♜</span>Ranking</button>
+  <button class="nav-item" data-view="challenges"><span>⚑</span>Desafios</button>
+  <button class="nav-item" data-view="profile"><span>●</span>Perfil</button>
+ </nav>
 </main>
 
 <div id="tracker" class="tracker hidden" role="dialog" aria-modal="true">
-  <div class="tracker-sheet">
-    <div class="sheet-handle"></div>
-    <div class="tracker-top">
-      <div><p class="eyebrow">ATIVIDADE EM ANDAMENTO</p><h2 id="tracker-title">Corrida</h2></div>
-      <button id="tracker-close" class="icon-button" aria-label="Fechar">×</button>
-    </div>
-    <div id="gps-warning" class="notice">Aguardando sinal GPS. Mantenha a localização ativada.</div>
-    <div class="tracker-metrics">
-      <div class="metric-main"><span>Distância</span><strong id="track-distance">0.00 <small>km</small></strong></div>
-      <div><span>Tempo</span><strong id="track-time">00:00</strong></div>
-      <div><span>Ritmo médio</span><strong id="track-pace">--:--</strong></div>
-    </div>
-    <div id="tracker-map"></div>
-    <div class="tracker-controls">
-      <button id="pause-button" class="btn btn-outline">Pausar</button>
-      <button id="finish-button" class="btn btn-primary">Finalizar atividade</button>
-    </div>
-    <p class="tracker-footnote">Mantenha a tela ligada durante o registro. O GPS do navegador pode ser interrompido quando o celular bloqueia a tela. O trajeto é exibido durante a sessão, mas não é salvo no banco nesta versão.</p>
+ <div class="tracker-sheet">
+  <div class="sheet-handle"></div>
+  <div class="tracker-top"><div><p class="eyebrow">ATIVIDADE EM ANDAMENTO</p><h2 id="tracker-title">Corrida</h2></div><button id="tracker-close" class="icon-button" aria-label="Fechar">×</button></div>
+  <div id="gps-warning" class="notice">Aguardando sinal GPS. Mantenha a localização ativada.</div>
+  <div class="tracker-metrics">
+   <div class="metric-main"><span>Distância</span><strong id="track-distance">0.00 <small>km</small></strong></div>
+   <div><span>Tempo</span><strong id="track-time">00:00</strong></div>
+   <div><span>Ritmo médio</span><strong id="track-pace">--:--</strong></div>
   </div>
+  <div id="tracker-map"></div>
+  <div class="tracker-controls"><button id="pause-button" class="btn btn-outline">Pausar</button><button id="finish-button" class="btn btn-primary">Finalizar atividade</button></div>
+  <p class="tracker-footnote">Mantenha a tela ligada durante o registro. O GPS pode ser interrompido quando o celular bloqueia a tela. O trajeto não é salvo no banco nesta versão.</p>
+ </div>
 </div>
-
 <div id="toast" class="toast hidden" role="status"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
-(() => {
+(()=>{
 "use strict";
-
-/* CONFIGURAÇÃO SUPABASE */
-const SUPABASE_URL = "https://wczgkofqsnodpvmbzpsc.supabase.co";
-const SUPABASE_KEY = "sb_publishable_wdBxTrkIJIBkEWVWubLCpA_HZO8VyQB";
-
-const $ = id => document.getElementById(id);
-const supabaseClient = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-
-let currentUser = null;
-let profile = null;
-let signupMode = false;
-let cityMap = null;
-let trackerMap = null;
-let cityMarker = null;
-let trackerMarker = null;
-let routeLine = null;
-let watchId = null;
-let timerId = null;
-let activity = null;
-let toastTimer = null;
-
-const sportNames = {run:"Corrida",ride:"Ciclismo",walk:"Caminhada"};
-const sportIcons = {run:"🏃",ride:"🚴",walk:"🚶"};
+const SUPABASE_URL="https://wczgkofqsnodpvmbzpsc.supabase.co";
+const SUPABASE_KEY="sb_publishable_wdBxTrkIJIBkEWVWubLCpA_HZO8VyQB";
+const $=id=>document.getElementById(id);
+let supabaseClient=null,currentUser=null,profile=null,signupMode=false;
+let cityMap=null,trackerMap=null,cityMarker=null,trackerMarker=null,routeLine=null;
+let watchId=null,timerId=null,activity=null,toastTimer=null;
+const sportNames={run:"Corrida",ride:"Ciclismo",walk:"Caminhada"};
+const sportIcons={run:"🏃",ride:"🚴",walk:"🚶"};
 
 function toast(message){
-  $("toast").textContent = message;
-  $("toast").classList.remove("hidden");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>$("toast").classList.add("hidden"),3200);
+ $("toast").textContent=message;$("toast").classList.remove("hidden");
+ clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),3500);
 }
-
-function setConnection(message){
-  $("connection-status").innerHTML = "<i></i> " + message;
-}
-
-function showAuth(){
-  $("auth-screen").classList.remove("hidden");
-  $("app").classList.add("hidden");
-}
-
+function setConnection(message){$("connection-status").innerHTML="<i></i> "+message}
+function showAuth(){$("auth-screen").classList.remove("hidden");$("app").classList.add("hidden")}
 function showApp(){
-  $("auth-screen").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  setTimeout(()=>{if(cityMap)cityMap.invalidateSize()},150);
+ $("auth-screen").classList.add("hidden");$("app").classList.remove("hidden");
+ setTimeout(()=>{if(cityMap)cityMap.invalidateSize()},200);
 }
-
 function showView(name){
-  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
-  document.querySelectorAll(".nav-item").forEach(v=>v.classList.remove("active"));
-  const view = $("view-"+name);
-  if(view)view.classList.add("active");
-  const nav = document.querySelector('[data-view="'+name+'"]');
-  if(nav)nav.classList.add("active");
-  if(name==="map" && cityMap)setTimeout(()=>cityMap.invalidateSize(),100);
-  if(name==="profile")loadProfileForm();
+ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+ document.querySelectorAll(".nav-item").forEach(v=>v.classList.remove("active"));
+ const view=$("view-"+name);if(view)view.classList.add("active");
+ const nav=document.querySelector('[data-view="'+name+'"]');if(nav)nav.classList.add("active");
+ if(name==="map"&&cityMap)setTimeout(()=>cityMap.invalidateSize(),150);
+ if(name==="profile")loadProfileForm();
 }
-
-function formatDistance(meters){
-  return (Number(meters||0)/1000).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})+" km";
+function formatDistance(m){return (Number(m||0)/1000).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})+" km"}
+function formatDuration(s){
+ s=Math.max(0,Math.floor(Number(s)||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;
+ return h>0?[h,m,sec].map(v=>String(v).padStart(2,"0")).join(":"):[m,sec].map(v=>String(v).padStart(2,"0")).join(":");
 }
-function formatDuration(seconds){
-  seconds = Math.max(0,Math.floor(seconds||0));
-  const h=Math.floor(seconds/3600),m=Math.floor((seconds%3600)/60),s=seconds%60;
-  return h>0?[h,m,s].map(v=>String(v).padStart(2,"0")).join(":"):
-    [m,s].map(v=>String(v).padStart(2,"0")).join(":");
-}
-function formatDate(value){
-  return new Date(value).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"});
-}
-function escapeHTML(value){
-  return String(value??"").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  })[c]);
-}
+function formatDate(v){return v?new Date(v).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"}):"Data não informada"}
+function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function haversine(a,b){
-  const R=6371000,rad=x=>x*Math.PI/180;
-  const dLat=rad(b.lat-a.lat),dLon=rad(b.lng-a.lng);
-  const x=Math.sin(dLat/2)**2+
-    Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;
-  return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+ const R=6371000,rad=x=>x*Math.PI/180,dLat=rad(b.lat-a.lat),dLon=rad(b.lng-a.lng);
+ const x=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;
+ return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
-
-/* MAPA PRINCIPAL */
-function initCityMap(){
-  if(cityMap || !window.L)return;
-  cityMap=L.map("city-map").setView([-14.2,-51.9],4);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-    maxZoom:19,attribution:"&copy; OpenStreetMap contributors"
-  }).addTo(cityMap);
-}
-
-function locateUser(){
-  if(!navigator.geolocation){
-    toast("Seu navegador não oferece suporte à localização.");
-    return;
-  }
-  toast("Buscando sua localização...");
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const lat=pos.coords.latitude,lng=pos.coords.longitude;
-    initCityMap();
-    cityMap.setView([lat,lng],16);
-    if(cityMarker)cityMarker.remove();
-    cityMarker=L.circleMarker([lat,lng],{
-      radius:9,color:"#ffffff",weight:3,fillColor:"#c5f542",fillOpacity:1
-    }).addTo(cityMap).bindPopup("Você está aqui");
-    toast("Localização encontrada.");
-  },err=>{
-    toast(gpsError(err));
-  },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
-}
-
 function gpsError(err){
-  if(err.code===1)return "Permita o acesso à localização nas configurações do navegador.";
-  if(err.code===2)return "Não foi possível obter o sinal GPS. Verifique o GPS do celular.";
-  if(err.code===3)return "O GPS demorou demais para responder. Tente novamente.";
-  return "Não foi possível acessar o GPS.";
+ if(err.code===1)return "Permita o acesso à localização nas configurações do navegador.";
+ if(err.code===2)return "Não foi possível obter o sinal GPS. Verifique o GPS do celular.";
+ if(err.code===3)return "O GPS demorou demais para responder. Tente novamente.";
+ return "Não foi possível acessar o GPS.";
+}
+
+/* MAPAS */
+function initCityMap(){
+ if(cityMap)return;
+ if(!window.L){toast("O mapa não carregou. Verifique sua conexão.");return}
+ cityMap=L.map("city-map").setView([-14.2,-51.9],4);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(cityMap);
+}
+function locateUser(){
+ if(!navigator.geolocation){toast("Seu navegador não oferece suporte à localização.");return}
+ toast("Buscando sua localização...");
+ navigator.geolocation.getCurrentPosition(pos=>{
+  const lat=pos.coords.latitude,lng=pos.coords.longitude;initCityMap();if(!cityMap)return;
+  cityMap.setView([lat,lng],16);if(cityMarker)cityMarker.remove();
+  cityMarker=L.circleMarker([lat,lng],{radius:9,color:"#fff",weight:3,fillColor:"#c5f542",fillOpacity:1}).addTo(cityMap).bindPopup("Você está aqui");
+  toast("Localização encontrada.");
+ },err=>toast(gpsError(err)),{enableHighAccuracy:true,timeout:15000,maximumAge:0});
 }
 
 /* AUTENTICAÇÃO */
 $("auth-toggle").addEventListener("click",()=>{
-  signupMode=!signupMode;
-  $("name-field").classList.toggle("hidden",!signupMode);
-  $("auth-name").required=signupMode;
-  $("auth-submit").textContent=signupMode?"Criar minha conta":"Entrar";
-  $("auth-toggle").textContent=signupMode?"Já tenho uma conta. Entrar":"Ainda não tem conta? Criar cadastro";
-  $("auth-message").textContent="";
+ signupMode=!signupMode;$("name-field").classList.toggle("hidden",!signupMode);
+ $("auth-name").required=signupMode;$("auth-submit").textContent=signupMode?"Criar minha conta":"Entrar";
+ $("auth-toggle").textContent=signupMode?"Já tenho uma conta. Entrar":"Ainda não tem conta? Criar cadastro";
+ $("auth-message").textContent="";
 });
-
 $("auth-form").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const email=$("auth-email").value.trim();
-  const password=$("auth-password").value;
-  const name=$("auth-name").value.trim();
-  const button=$("auth-submit");
-  button.disabled=true;
-  button.textContent="Aguarde...";
-  $("auth-message").textContent="";
-
-  try{
-    if(signupMode){
-      const {data,error}=await supabaseClient.auth.signUp({
-        email,password,options:{data:{full_name:name}}
-      });
-      if(error)throw error;
-      if(data.session){
-        toast("Conta criada com sucesso!");
-        await handleSession(data.session);
-      }else{
-        $("auth-message").textContent="Cadastro criado. Confira seu e-mail para confirmar a conta.";
-      }
-    }else{
-      const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
-      if(error)throw error;
-      await handleSession(data.session);
-    }
-  }catch(error){
-    $("auth-message").textContent=error.message||"Não foi possível concluir.";
-  }finally{
-    button.disabled=false;
-    button.textContent=signupMode?"Criar minha conta":"Entrar";
+ e.preventDefault();if(!supabaseClient){$("auth-message").textContent="Serviço de autenticação indisponível. Recarregue a página.";return}
+ const email=$("auth-email").value.trim(),password=$("auth-password").value,name=$("auth-name").value.trim(),button=$("auth-submit");
+ button.disabled=true;button.textContent="Aguarde...";$("auth-message").textContent="";
+ try{
+  if(signupMode){
+   const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{full_name:name}}});
+   if(error)throw error;
+   if(data.session){toast("Conta criada com sucesso!");await handleSession(data.session)}
+   else $("auth-message").textContent="Cadastro criado. Confira seu e-mail para confirmar a conta.";
+  }else{
+   const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+   if(error)throw error;await handleSession(data.session);
   }
+ }catch(error){$("auth-message").textContent=error.message||"Não foi possível concluir."}
+ finally{button.disabled=false;button.textContent=signupMode?"Criar minha conta":"Entrar"}
 });
-
 async function handleSession(session){
-  if(!session?.user)return;
-  currentUser=session.user;
-  setConnection("Conectado");
-  showApp();
-  initCityMap();
-  await ensureProfile();
-  await refreshDashboard();
-  await loadChallenges();
+ if(!session?.user)return;
+ currentUser=session.user;setConnection("Conectado");showApp();initCityMap();
+ try{await ensureProfile();await refreshDashboard();await loadChallenges()}
+ catch(error){console.error(error);toast("Erro ao carregar seus dados: "+error.message)}
 }
-
 async function ensureProfile(){
-  const {data,error}=await supabaseClient.from("pr
+ const {data,error}=await supabaseClient.from("profiles").select("id,username,full_name,avatar_url").eq("id",currentUser.id).maybeSingle();
+ if(error)throw error;profile=data;
+ if(!profile){
+  const fullName=currentUser.user_metadata?.full_name||currentUser.email?.split("@")[0]||"Atleta";
+  const username="atleta_"+currentUser.id.slice(0,8);
+  const {data:created,error:createError}=await supabaseClient.from("profiles").upsert({id:currentUser.id,full_name:fullName,username},{onConflict:"id"}).select().single();
+  if(createError)throw createError;profile=created;
+ }
+ updateWelcome();
+}
+function updateWelcome(){
+ const name=profile?.full_name||cu
