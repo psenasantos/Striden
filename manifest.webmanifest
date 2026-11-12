@@ -1,11 +1,23 @@
 {
   "name": "STRIDEN — Run, Ride & Conquer",
   "short_name": "STRIDEN",
-  "start_url": "./index.html",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#102322",
-  "theme_color": "#102322",
+  "background_color": "#090e1b",
+  "theme_color": "#090e1b",
   "icons": [
-    { "src": "assets/striden-icon.png", "sizes": "1242x1242", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "assets/striden-icon.png",
+      "sizes": "1242x1242",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/striden-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
   ]
 }
